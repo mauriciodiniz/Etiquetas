@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root{
-      --label-size:48mm;
+      --label-size:50mm;
       --pad:6px;
       --line:#333;
       --font-family: 'Arial', sans-serif;
@@ -44,19 +44,19 @@
       color:white;
     }
 
-    /* Preview da etiqueta (quadrado 48x48mm) */
+    /* Preview da etiqueta (quadrado 50x50mm) */
     .label-preview{
       width:var(--label-size);
       height:var(--label-size);
       padding:var(--pad);
-      border:1px solid #999;
       box-sizing:border-box;
       background:white;
       flex-shrink:0;
-      border-radius:12px; /* Borda arredondada do quadrado */
+      border-radius:6px;
       display:flex;
-      flex-direction:column;
+      align-items:center;
       justify-content:center;
+      margin-bottom:10mm; /* Espaço entre etiquetas */
     }
 
     .etiqueta{
@@ -64,26 +64,23 @@
     }
 
     .company{font-size:11px;text-align:center;font-weight:600}
-    .divider{border-top:1px solid var(--line);margin:6px 0}
-    .product{font-weight:700;font-size:14px;text-align:center;margin:6px 0}
+    .cnpj{font-size:9px;text-align:center;margin-top:2px}
+    .divider{border-top:1px solid var(--line);margin:4px 0}
+    .product{font-weight:700;font-size:14px;text-align:center;margin:4px 0}
     .bold-large{font-weight:700;font-size:13px;text-align:center}
 
     .row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
     .peso{font-size:11px}
     .peso b{font-weight:700}
 
-    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
+    .total{font-weight:700;font-size:11px;text-align:right;margin-top:6px}
+    .total-value{font-size:14px; font-weight:900; margin-left:2px}
 
     @media print{
       body *{visibility:hidden}
       .label-preview, .label-preview *{visibility:visible}
-      .label-preview{
-        position:fixed;left:0;top:0;margin:0;border:1px solid #000;
-        width:var(--label-size);height:var(--label-size);
-        border-radius:12px;
-        padding:5mm;
-      }
-      @page{size:58mm auto; margin:0}
+      .label-preview{position:relative;left:0;top:0;margin:0 auto 10mm auto;border:none;width:var(--label-size);height:var(--label-size);padding-left:0;padding-right:0;}
+      @page{size:auto; margin:0}
       .company{font-size:13px;font-weight:700}
     }
 
@@ -123,6 +120,7 @@
   <div class="label-preview" id="labelPreview">
     <div class="etiqueta" id="etiqueta">
       <div class="company">88ml Delivery Ltda</div>
+      <div class="cnpj">CNPJ: 61.615.703/0001-19</div>
       <div class="divider"></div>
 
       <div class="product product-name" id="previewNome">ANCHO ESTÂNCIA 92</div>
@@ -134,7 +132,7 @@
 
       <div class="divider"></div>
 
-      <div class="total" id="previewTotal">TOTAL: R$0,00</div>
+      <div class="total" id="previewTotal"><b>TOTAL:</b> <span class="total-value">R$0,00</span></div>
     </div>
   </div>
 
@@ -180,7 +178,7 @@
       previewNome.textContent = nome.toUpperCase();
       previewPeso.innerHTML = '<b>Peso:</b> ' + formatPeso(peso) + ' kg';
       previewPreco.innerHTML = '<b>R$/kg:</b> ' + formatMoneyBR(preco);
-      previewTotal.textContent = 'TOTAL: ' + formatMoneyBR(total);
+      previewTotal.innerHTML = '<b>TOTAL:</b> <span class="total-value">' + formatMoneyBR(total) + '</span>';
 
       totalInput.value = formatMoneyBR(total);
     }
