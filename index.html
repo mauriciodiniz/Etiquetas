@@ -19,10 +19,9 @@
       gap:20px;
       padding:20px;
       flex-wrap:wrap;
-      background:#f5f5f5; /* Cor de fundo do site */
+      background:#f5f5f5;
     }
 
-    /* Área de controles */
     .controls{min-width:320px;flex:1}
     label{display:block;margin:8px 0 4px;font-weight:600}
     input[type="text"], input[type="number"]{
@@ -30,7 +29,7 @@
       padding:8px;
       font-size:16px;
       box-sizing:border-box;
-      border-radius:8px; /* Arredondamento dos cantos */
+      border-radius:8px;
       border:1px solid #ccc;
     }
     button{
@@ -38,13 +37,12 @@
       padding:10px 14px;
       font-size:16px;
       cursor:pointer;
-      border-radius:8px; /* Arredondamento dos botões */
+      border-radius:8px;
       border:none;
       background:#333;
       color:white;
     }
 
-    /* Preview da etiqueta (quadrado 50x50mm) */
     .label-preview{
       width:var(--label-size);
       height:var(--label-size);
@@ -56,7 +54,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      margin-bottom:10mm; /* Espaço entre etiquetas */
+      margin-bottom:10mm;
     }
 
     .etiqueta{
@@ -69,12 +67,14 @@
     .product{font-weight:700;font-size:14px;text-align:center;margin:4px 0}
     .bold-large{font-weight:700;font-size:13px;text-align:center}
 
-    .row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+    .row{display:flex;flex-direction:column;align-items:flex-start;font-size:11px; gap:2px;}
     .peso{font-size:11px}
     .peso b{font-weight:700}
+    .preco{font-size:11px}
+    .preco b{font-weight:700}
 
     .total{font-weight:700;font-size:11px;text-align:right;margin-top:6px}
-    .total-value{font-size:14px; font-weight:900; margin-left:2px}
+    .total-value{font-size:18px; font-weight:900; margin-left:2px}
 
     @media print{
       body *{visibility:hidden}
@@ -87,7 +87,6 @@
     .store-name{font-weight:700}
     .product-name{font-weight:900;font-size:15px;letter-spacing:0.6px}
 
-    /* No mobile a pré-visualização fica abaixo dos botões */
     @media(max-width:768px){
       body{flex-direction:column}
       .controls{width:100%}
@@ -126,8 +125,8 @@
       <div class="product product-name" id="previewNome">ANCHO ESTÂNCIA 92</div>
 
       <div class="row">
+        <div class="preco" id="previewPreco"><b>R$/kg:</b> R$0,00</div>
         <div class="peso" id="previewPeso"><b>Peso:</b> 0,000 kg</div>
-        <div class="peso" id="previewPreco"><b>R$/kg:</b> R$0,00</div>
       </div>
 
       <div class="divider"></div>
@@ -169,6 +168,21 @@
       return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
     }
 
+    function maskInput(input, type){
+      input.addEventListener('input', ()=>{
+        let value = input.value;
+        if(type==='peso'){
+          value = value.replace(/[^0-9,]/g,'');
+        } else if(type==='money'){
+          value = value.replace(/[^0-9,]/g,'');
+        }
+        input.value = value;
+      });
+    }
+
+    maskInput(pesoInput, 'peso');
+    maskInput(precoInput, 'money');
+
     function atualizarPreview(){
       const nome = nomeInput.value.trim() || 'ANCHO ESTÂNCIA 92';
       const peso = parseNumberBR(pesoInput.value) || 0;
@@ -176,14 +190,15 @@
       const total = peso * preco;
 
       previewNome.textContent = nome.toUpperCase();
-      previewPeso.innerHTML = '<b>Peso:</b> ' + formatPeso(peso) + ' kg';
       previewPreco.innerHTML = '<b>R$/kg:</b> ' + formatMoneyBR(preco);
+      previewPeso.innerHTML = '<b>Peso:</b> ' + formatPeso(peso) + ' kg';
       previewTotal.innerHTML = '<b>TOTAL:</b> <span class="total-value">' + formatMoneyBR(total) + '</span>';
 
       totalInput.value = formatMoneyBR(total);
     }
 
-    document.getElementById('atualizar').addEventListener('click', atualizarPreview);
+    document.getElementById('atualizar').addEventListener('click',
+ atualizarPreview);
     document.getElementById('imprimir').addEventListener('click', ()=>{
       atualizarPreview();
       window.print();
