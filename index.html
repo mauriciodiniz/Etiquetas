@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Impressão de Etiqueta 58mm — 88ml Delivery</title>
-  <link rel="icon" type="image/png" href="etiqueta-peso.png">
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root{
-      --label-width:58mm;
+      --label-size:48mm;
       --pad:6px;
       --line:#333;
       --font-family: 'Arial', sans-serif;
@@ -44,15 +44,19 @@
       color:white;
     }
 
-    /* Preview da etiqueta (tamanho real em mm) */
+    /* Preview da etiqueta (quadrado 48x48mm) */
     .label-preview{
-      width:var(--label-width);
+      width:var(--label-size);
+      height:var(--label-size);
       padding:var(--pad);
-      border:1px dashed #999;
+      border:1px solid #999;
       box-sizing:border-box;
       background:white;
       flex-shrink:0;
-      border-radius:6px;
+      border-radius:12px; /* Borda arredondada do quadrado */
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
 
     .etiqueta{
@@ -68,12 +72,17 @@
     .peso{font-size:11px}
     .peso b{font-weight:700}
 
-    .total{font-weight:700;font-size:13px;text-align:right;margin-top:6px}
+    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
 
     @media print{
       body *{visibility:hidden}
       .label-preview, .label-preview *{visibility:visible}
-      .label-preview{position:fixed;left:0;top:0;margin:0;border:none;padding-left:5mm;padding-right:5mm;}
+      .label-preview{
+        position:fixed;left:0;top:0;margin:0;border:1px solid #000;
+        width:var(--label-size);height:var(--label-size);
+        border-radius:12px;
+        padding:5mm;
+      }
       @page{size:58mm auto; margin:0}
       .company{font-size:13px;font-weight:700}
     }
@@ -91,7 +100,7 @@
 </head>
 <body>
   <div class="controls">
-    <h2>Gerador de Etiqueta 58mm — 88ml Delivery</h2>
+    <h2>Gerador de Etiqueta 58mm — 88ml</h2>
 
     <label for="nome">NOME:</label>
     <input id="nome" type="text" placeholder="Ex: ANCHO ESTÂNCIA 92">
