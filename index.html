@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Impressão de Etiquetas 58mm</title>
+<title>Etiquetas 58mm — 88ml Delivery</title>
 
 <style>
   body {
@@ -12,7 +12,7 @@
   }
 
   .container {
-    max-width: 300px;
+    max-width: 350px;
     margin: auto;
   }
 
@@ -36,22 +36,43 @@
     border: none;
     font-size: 18px;
     cursor: pointer;
+    margin-top: 5px;
     font-weight: bold;
   }
 
-  /* ---------- ESTILO DA IMPRESSÃO ---------- */
+  /* Pré-visualização da etiqueta */
+  .preview-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 15px;
+    width: 58mm;
+    min-height: 40mm;
+    background: #fff;
+  }
+
+  /* ======= IMPRESSÃO ======= */
   @media print {
 
-    body { margin: 0; padding: 0; }
+    body * {
+      visibility: hidden;
+    }
 
-    .no-print { display: none !important; }
+    #print-area, #print-area * {
+      visibility: visible;
+    }
+
+    #print-area {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 58mm;
+    }
 
     .etiqueta {
       width: 58mm;
       padding: 5px;
       font-family: Arial, sans-serif;
       font-size: 12px;
-      line-height: 1.2;
     }
 
     .empresa {
@@ -100,7 +121,8 @@
 </head>
 <body>
 
-<div class="container no-print">
+<div class="container">
+
   <h2>Gerador de Etiquetas 58mm</h2>
 
   <label>NOME:</label>
@@ -113,10 +135,14 @@
   <input id="preco" type="text" placeholder="Ex: 79,90">
 
   <button onclick="imprimir()">IMPRIMIR</button>
+
+  <h3>Pré-visualização</h3>
+  <div id="preview" class="preview-box"></div>
+
 </div>
 
-<!-- ÁREA DA ETIQUETA (gerada dinamicamente) -->
-<div id="print-area" style="display:none"></div>
+<!-- ÁREA INVISÍVEL PARA IMPRESSÃO -->
+<div id="print-area" style="position:absolute; left:-9999px"></div>
 
 <script>
 /* ----------- MÁSCARA DE PESO ------------ */
@@ -124,6 +150,7 @@ document.getElementById("peso").addEventListener("input", function () {
   let v = this.value.replace(",", ".").replace(/[^0-9.]/g, "");
   if (v.split(".").length > 2) v = v.replace(/\.+$/, "");
   this.value = v.replace(".", ",");
+  atualizarPreview();
 });
 
 /* ---------- MÁSCARA DE PREÇO ---------- */
@@ -132,52 +159,14 @@ document.getElementById("preco").addEventListener("input", function () {
   v = (v / 100).toFixed(2) + "";
   v = v.replace(".", ",");
   this.value = v;
+  atualizarPreview();
 });
 
-/* -------- FUNÇÃO IMPRIMIR ETIQUETA -------- */
-function imprimir() {
-  const nome = document.getElementById("nome").value;
-  const peso = document.getElementById("peso").value.replace(",", ".");
-  const preco = document.getElementById("preco").value.replace(",", ".");
+/* Atualiza preview ao digitar o nome */
+document.getElementById("nome").addEventListener("input", atualizarPreview);
 
-  if (!nome || !peso || !preco) {
-    alert("Preencha todos os campos!");
-    return;
-  }
-
-  const total = (Number(peso) * Number(preco)).toFixed(2).replace(".", ",");
-
-  const html = `
-    <div class="etiqueta">
-      <div class="empresa">88ml Delivery Ltda</div>
-      <div class="cnpj">CNPJ: 61.615.703/0001-19</div>
-
-      <div class="linha"></div>
-
-      <div class="produto">${nome}</div>
-
-      <div class="valor">Peso: <b>${peso.replace(".", ",")} kg</b></div>
-      <div class="valor">R$/kg: <b>R$ ${preco.replace(".", ",")}</b></div>
-
-      <div class="linha"></div>
-
-      <div class="total"><b>TOTAL: R$ ${total}</b></div>
-
-      <div class="espaco-logo"></div>
-    </div>
-  `;
-
-  const printArea = document.getElementById("print-area");
-  printArea.innerHTML = html;
-  printArea.style.display = "block";
-
-  window.print();
-
-  setTimeout(() => {
-    printArea.style.display = "none";
-  }, 500);
-}
-</script>
-
-</body>
-</html>
+/* -------- FUNÇÃO ATUALIZAR PREVIEW -------- */
+function atualizarPreview() {
+  const nome = document.getElementById("nome").value || "";
+  const peso = document.getElementById("peso").value || "";
+  const preco = document.getElementByI
