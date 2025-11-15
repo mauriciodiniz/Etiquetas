@@ -1,172 +1,230 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Etiquetas 58mm — 88ml Delivery</title>
-
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-
-  .container {
-    max-width: 350px;
-    margin: auto;
-  }
-
-  label {
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  input {
-    width: 100%;
-    padding: 6px;
-    margin-bottom: 12px;
-    font-size: 16px;
-  }
-
-  button {
-    width: 100%;
-    padding: 10px;
-    background: black;
-    color: white;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 5px;
-    font-weight: bold;
-  }
-
-  /* Pré-visualização da etiqueta */
-  .preview-box {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-top: 15px;
-    width: 58mm;
-    min-height: 40mm;
-    background: #fff;
-  }
-
-  /* ======= IMPRESSÃO ======= */
-  @media print {
-
-    body * {
-      visibility: hidden;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Impressão de Etiqueta 58mm — 88ml Delivery</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    :root{
+      --label-width:58mm;
+      --pad:6px;
+      --line:#333;
+      --font-family: 'Arial', sans-serif;
     }
 
-    #print-area, #print-area * {
-      visibility: visible;
+    body{
+      font-family:var(--font-family);
+      display:flex;
+      gap:20px;
+      padding:20px;
+      flex-wrap:wrap;
+      background:#f5f5f5; /* Cor de fundo do site */
     }
 
-    #print-area {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 58mm;
+    /* Área de controles */
+    .controls{min-width:320px;flex:1}
+    label{display:block;margin:8px 0 4px;font-weight:600}
+    input[type="text"], input[type="number"]{
+      width:100%;
+      padding:8px;
+      font-size:16px;
+      box-sizing:border-box;
+      border-radius:8px; /* Arredondamento dos cantos */
+      border:1px solid #ccc;
+    }
+    button{
+      margin-top:12px;
+      padding:10px 14px;
+      font-size:16px;
+      cursor:pointer;
+      border-radius:8px; /* Arredondamento dos botões */
+      border:none;
+      background:#333;
+      color:white;
     }
 
-    .etiqueta {
-      width: 58mm;
-      padding: 5px;
-      font-family: Arial, sans-serif;
-      font-size: 12px;
+    /* Preview da etiqueta (tamanho real em mm) */
+    .label-preview{
+      width:var(--label-width);
+      min-height:50cm; /* Garantir altura mínima de 50cm */
+      padding:var(--pad);
+      border:1px dashed #999;
+      box-sizing:border-box;
+      background:white;
+      flex-shrink:0;
+      border-radius:6px;
     }
 
-    .empresa {
-      text-align: center;
-      font-weight: bold;
-      font-size: 13px;
+    .etiqueta{
+      width:100%;
     }
 
-    .cnpj {
-      text-align: center;
-      font-size: 10px;
+    .company{font-size:11px;text-align:center;font-weight:600}
+    .divider{border-top:1px solid var(--line);margin:6px 0}
+    .product{font-weight:700;font-size:14px;text-align:center;margin:6px 0}
+    .bold-large{font-weight:700;font-size:13px;text-align:center}
+
+    .row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+    .peso{font-size:11px}
+    .peso b{font-weight:700}
+
+    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
+
+    @media print{
+      body *{visibility:hidden}
+      .label-preview, .label-preview *{visibility:visible}
+      .label-preview{position:fixed;left:0;top:0;margin:0;border:none;padding-left:5mm;padding-right:5mm;min-height:50cm;}
+      @page{size:58mm auto; margin:0}
+      .company{font-size:13px;font-weight:700}
     }
 
-    .linha {
-      margin: 4px 0;
-      border-bottom: 1px dashed black;
+    .store-name{font-weight:700}
+    .product-name{font-weight:900;font-size:15px;letter-spacing:0.6px}
+
+    /* No mobile a pré-visualização fica abaixo dos botões */
+    @media(max-width:768px){
+      body{flex-direction:column}
+      .controls{width:100%}
+      .label-preview{margin-top:20px;align-self:center}
     }
 
-    .produto {
-      font-size: 15px;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 4px;
+        .print-gap {
+      height: 20mm; /* altura fixa do espaço */
+      display: block;
     }
 
-    .valor {
-      font-weight: bold;
-      font-size: 13px;
+    @media print {
+      .print-gap {
+        display: block;
+      }
     }
 
-    .total {
-      font-weight: bold;
-      font-size: 20px; 
-      margin-top: 5px;
-      text-align: center;
-    }
+            .logo-area {
+        width: 100%;
+        height: 20mm;           /* Altura solicitada */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 6px;
+        }
 
-    .espaco-logo {
-      height: 20mm;
-      border: 1px dashed #ccc;
-      margin-top: 10px;
-    }
-  }
-</style>
+        .logo-img {
+        max-height: 100%;
+        max-width: 95%;
+        object-fit: contain;
+        }
 
+
+  </style>
 </head>
 <body>
+  <div class="controls">
+    <h2>Gerador de Etiqueta 58mm — 88ml</h2>
 
-<div class="container">
+    <label for="nome">NOME:</label>
+    <input id="nome" type="text" placeholder="INSERIR TÍTULO">
 
-  <h2>Gerador de Etiquetas 58mm</h2>
+    <label for="peso">PESO (kg):</label>
+    <input id="peso" type="text" placeholder="0,952">
 
-  <label>NOME:</label>
-  <input id="nome" type="text" placeholder="Ex: ANCHO ESTÂNCIA 92">
+    <label for="preco">R$/KG:</label>
+    <input id="preco" type="text" placeholder="79,90">
 
-  <label>PESO (kg):</label>
-  <input id="peso" type="text" placeholder="Ex: 0,952">
+    <label for="total">TOTAL:</label>
+    <input id="total" type="text" readonly placeholder="Calculado automaticamente">
 
-  <label>R$/KG:</label>
-  <input id="preco" type="text" placeholder="Ex: 79,90">
+    <button id="atualizar">Atualizar Pré-visualização</button>
+    <button id="imprimir">IMPRIMIR</button>
 
-  <button onclick="imprimir()">IMPRIMIR</button>
+    <p style="margin-top:10px;font-size:12px;color:#444">Dica: use uma impressora térmica/laser configurada para papel de 58mm. O botão <strong>IMPRIMIR</strong> abrirá a janela de impressão do navegador exibindo apenas a etiqueta.</p>
+  </div>
 
-  <h3>Pré-visualização</h3>
-  <div id="preview" class="preview-box"></div>
+  <div class="label-preview" id="labelPreview">
+    <div class="etiqueta" id="etiqueta">
+      <div class="company">88ml Delivery Ltda</div>
+      <div class="divider"></div>
 
-</div>
+      <div class="product product-name" id="previewNome">INSERIR TÍTULO</div>
 
-<!-- ÁREA INVISÍVEL PARA IMPRESSÃO -->
-<div id="print-area" style="position:absolute; left:-9999px"></div>
+      <div class="row">
+        <div class="peso" id="previewPeso"><b>Peso:</b> 0,000 kg</div>
+        <div class="peso" id="previewPreco"><b>R$/kg:</b> R$0,00</div>
+      </div>
 
-<script>
-/* ----------- MÁSCARA DE PESO ------------ */
-document.getElementById("peso").addEventListener("input", function () {
-  let v = this.value.replace(",", ".").replace(/[^0-9.]/g, "");
-  if (v.split(".").length > 2) v = v.replace(/\.+$/, "");
-  this.value = v.replace(".", ",");
-  atualizarPreview();
-});
+      <div class="divider"></div>
 
-/* ---------- MÁSCARA DE PREÇO ---------- */
-document.getElementById("preco").addEventListener("input", function () {
-  let v = this.value.replace(/\D/g, "");
-  v = (v / 100).toFixed(2) + "";
-  v = v.replace(".", ",");
-  this.value = v;
-  atualizarPreview();
-});
+      <div class="total" id="previewTotal">TOTAL: R$0,00</div>
+            <!-- Área da logo -->
+        <div class="logo-area">
+        <img src="logo.png" alt="Logo" class="logo-img">
+        </div>
+      <div class="print-gap"></div>
+    </div>
+  </div>
 
-/* Atualiza preview ao digitar o nome */
-document.getElementById("nome").addEventListener("input", atualizarPreview);
+  <script>
+    const nomeInput = document.getElementById('nome');
+    const pesoInput = document.getElementById('peso');
+    const precoInput = document.getElementById('preco');
+    const totalInput = document.getElementById('total');
 
-/* -------- FUNÇÃO ATUALIZAR PREVIEW -------- */
-function atualizarPreview() {
-  const nome = document.getElementById("nome").value || "";
-  const peso = document.getElementById("peso").value || "";
-  const preco = document.getElementByI
+    const previewNome = document.getElementById('previewNome');
+    const previewPeso = document.getElementById('previewPeso');
+    const previewPreco = document.getElementById('previewPreco');
+    const previewTotal = document.getElementById('previewTotal');
+
+    function parseNumberBR(value){
+      if(typeof value !== 'string') value = String(value);
+      value = value.replace(/[^0-9,\.\-]/g,'');
+      if(value === '') return NaN;
+      if(value.indexOf(',')>-1 && value.indexOf('.')>-1){
+        value = value.replace(/\./g,'').replace(',', '.');
+      } else {
+        value = value.replace(',', '.');
+      }
+      return parseFloat(value);
+    }
+
+    function formatPeso(value){
+      if(isNaN(value)) return '0,000';
+      return value.toFixed(3).replace('.', ',');
+    }
+
+    function formatMoneyBR(value){
+      if(isNaN(value)) return 'R$0,00';
+      return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
+    }
+
+    function atualizarPreview(){
+      const nome = nomeInput.value.trim() || 'INSERIR TÍTULO';
+      const peso = parseNumberBR(pesoInput.value) || 0;
+      const preco = parseNumberBR(precoInput.value) || 0;
+      const total = peso * preco;
+
+      previewNome.textContent = nome.toUpperCase();
+      previewPeso.innerHTML = '<b>Peso:</b> ' + formatPeso(peso) + ' kg';
+      previewPreco.innerHTML = '<b>R$/kg:</b> ' + formatMoneyBR(preco);
+      previewTotal.textContent = 'TOTAL: ' + formatMoneyBR(total);
+
+      totalInput.value = formatMoneyBR(total);
+    }
+
+    document.getElementById('atualizar').addEventListener('click', atualizarPreview);
+    document.getElementById('imprimir').addEventListener('click', ()=>{
+      atualizarPreview();
+      window.print();
+    });
+
+    let timer;
+    [nomeInput, pesoInput, precoInput].forEach(el=>{
+      el.addEventListener('input', ()=>{
+        clearTimeout(timer);
+        timer = setTimeout(atualizarPreview, 300);
+      })
+    });
+
+    atualizarPreview();
+  </script>
+</body>
+</html>
