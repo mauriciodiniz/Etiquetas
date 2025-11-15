@@ -7,12 +7,14 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root{
-      --label-width:58mm;
-      --pad:6px;
-      --line:#333;
-      --font-family: 'Arial', sans-serif;
-    }
-
+  --label-width:58mm;
+  --pad:6px;
+  --line:#333;
+  --font-family: 'Arial', sans-serif;
+  --label-height: 30mm;   /* altura da etiqueta (conteúdo visível) */
+  --gap-height: 20mm;     /* espaço fixo após a etiqueta (margem) */
+  --page-height: calc(var(--label-height) + var(--gap-height)); /* total por "página" */
+}
     body{
       font-family:var(--font-family);
       display:flex;
@@ -44,61 +46,67 @@
       color:white;
     }
 
-    /* Preview da etiqueta (tamanho real em mm) */
-    .label-preview{
-      width:var(--label-width);
-      min-height:50cm; /* Garantir altura mínima de 50cm */
-      padding:var(--pad);
-      border:1px dashed #999;
-      box-sizing:border-box;
-      background:white;
-      flex-shrink:0;
-      border-radius:6px;
-    }
+/* preview normal no site */
+.label-preview{
+  width:var(--label-width);
+  /* REMOVIDO min-height enorme */
+  padding:var(--pad);
+  border:1px dashed #999;
+  box-sizing:border-box;
+  background:white;
+  flex-shrink:0;
+  border-radius:6px;
+}
 
-    .etiqueta{
-      width:100%;
-    }
+/* define área interna da etiqueta com altura fixa */
+.etiqueta{
+  width:100%;
+  height: var(--label-height);
+  box-sizing: border-box;
+  overflow: hidden;
+  display:block;
+}
 
-    .company{font-size:11px;text-align:center;font-weight:600}
-    .divider{border-top:1px solid var(--line);margin:6px 0}
-    .product{font-weight:700;font-size:14px;text-align:center;margin:6px 0}
-    .bold-large{font-weight:700;font-size:13px;text-align:center}
+/* o spacer que aparece SOMENTE na impressão */
+.print-gap{
+  height: var(--gap-height);
+  display:none;
+}
 
-    .row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
-    .peso{font-size:11px}
-    .peso b{font-weight:700}
+/* --- estilo de impressão --- */
+@media print {
+  /* Esconder controles na hora de imprimir */
+  .controls { display: none !important; }
 
-    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
+  /* Force cada etiqueta como uma "página" com o tamanho total (etiqueta + gap) */
+  @page {
+    size: var(--label-width) var(--page-height);
+    margin: 0;
+  }
 
-    @media print{
-      body *{visibility:hidden}
-      .label-preview, .label-preview *{visibility:visible}
-      .label-preview{position:fixed;left:0;top:0;margin:0;border:none;padding-left:5mm;padding-right:5mm;min-height:50cm;}
-      @page{size:58mm auto; margin:0}
-      .company{font-size:13px;font-weight:700}
-    }
+  /* Mostrar o spacer somente no print */
+  .print-gap {
+    display: block;
+  }
 
-    .store-name{font-weight:700}
-    .product-name{font-weight:900;font-size:15px;letter-spacing:0.6px}
+  /* Garantir que a etiqueta quebre sempre e avance o papel */
+  .label-preview {
+    /* deixar visível e posicionada normalmente */
+    position: static !important;
+    box-shadow: none;
+    border: none;
+    page-break-after: always; /* antiga propriedade */
+    break-after: page;        /* moderna */
+  }
 
-    /* No mobile a pré-visualização fica abaixo dos botões */
-    @media(max-width:768px){
-      body{flex-direction:column}
-      .controls{width:100%}
-      .label-preview{margin-top:20px;align-self:center}
-    }
-
-        .print-gap {
-      height: 20mm; /* altura fixa do espaço */
-      display: none;
-    }
-
-    @media print {
-      .print-gap {
-        display: block;
-      }
-    }
+  /* evitar que o navegador reduza/encaixe o conteúdo */
+  html, body {
+    width: var(--label-width);
+    height: var(--page-height);
+    margin: 0;
+    padding: 0;
+  }
+}
 
   </style>
 </head>
