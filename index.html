@@ -69,7 +69,7 @@
     .peso{font-size:11px}
     .peso b{font-weight:700}
 
-    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px;margin-bottom:15px}
+    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
 
     @media print{
       body *{visibility:hidden}
@@ -88,6 +88,18 @@
       .controls{width:100%}
       .label-preview{margin-top:20px;align-self:center}
     }
+
+        .print-gap {
+      height: 20mm; /* altura fixa do espaço */
+      display: none;
+    }
+
+    @media print {
+      .print-gap {
+        display: block;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -117,7 +129,7 @@
       <div class="company">88ml Delivery Ltda</div>
       <div class="divider"></div>
 
-      <div class="product product-name" id="previewNome">ANCHO ESTÂNCIA 92</div>
+      <div class="product product-name" id="previewNome">INSERIR TÍTULO</div>
 
       <div class="row">
         <div class="peso" id="previewPeso"><b>Peso:</b> 0,000 kg</div>
@@ -127,6 +139,7 @@
       <div class="divider"></div>
 
       <div class="total" id="previewTotal">TOTAL: R$0,00</div>
+      <div class="print-gap"></div>
     </div>
   </div>
 
