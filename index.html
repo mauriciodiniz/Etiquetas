@@ -1,4 +1,3 @@
-// ...existing code...
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -8,8 +7,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root{
-      --label-size:58mm; /* largura/altura da etiqueta (ajuste conforme necessário) */
-      --label-gap:6mm;  /* espaço entre etiquetas quando imprimir */
+      --label-width:58mm;
       --pad:6px;
       --line:#333;
       --font-family: 'Arial', sans-serif;
@@ -21,9 +19,10 @@
       gap:20px;
       padding:20px;
       flex-wrap:wrap;
-      background:#f5f5f5;
+      background:#f5f5f5; /* Cor de fundo do site */
     }
 
+    /* Área de controles */
     .controls{min-width:320px;flex:1}
     label{display:block;margin:8px 0 4px;font-weight:600}
     input[type="text"], input[type="number"]{
@@ -31,7 +30,7 @@
       padding:8px;
       font-size:16px;
       box-sizing:border-box;
-      border-radius:8px;
+      border-radius:8px; /* Arredondamento dos cantos */
       border:1px solid #ccc;
     }
     button{
@@ -39,24 +38,22 @@
       padding:10px 14px;
       font-size:16px;
       cursor:pointer;
-      border-radius:8px;
+      border-radius:8px; /* Arredondamento dos botões */
       border:none;
       background:#333;
       color:white;
     }
 
+    /* Preview da etiqueta (tamanho real em mm) */
     .label-preview{
-      width:var(--label-size);
-      height:var(--label-size);
+      width:var(--label-width);
+      min-height:50cm; /* Garantir altura mínima de 50cm */
       padding:var(--pad);
+      border:1px dashed #999;
       box-sizing:border-box;
       background:white;
       flex-shrink:0;
       border-radius:6px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin-bottom:var(--label-gap); /* espaço entre etiquetas na visualização/impressão */
     }
 
     .etiqueta{
@@ -64,32 +61,28 @@
     }
 
     .company{font-size:11px;text-align:center;font-weight:600}
-    .cnpj{font-size:9px;text-align:center;margin-top:2px}
-    .divider{border-top:1px solid var(--line);margin:4px 0}
-    .product{font-weight:700;font-size:14px;text-align:center;margin:4px 0}
+    .divider{border-top:1px solid var(--line);margin:6px 0}
+    .product{font-weight:700;font-size:14px;text-align:center;margin:6px 0}
     .bold-large{font-weight:700;font-size:13px;text-align:center}
 
-    .row{display:flex;flex-direction:column;align-items:flex-start;font-size:11px; gap:2px;}
+    .row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
     .peso{font-size:11px}
     .peso b{font-weight:700}
-    .preco{font-size:11px}
-    .preco b{font-weight:700}
 
-    .total{font-weight:700;font-size:11px;text-align:right;margin-top:6px}
-    .total-value{font-size:18px; font-weight:900; margin-left:2px}
+    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
 
     @media print{
       body *{visibility:hidden}
       .label-preview, .label-preview *{visibility:visible}
-      .label-preview{position:relative;left:0;top:0;margin:0 auto var(--label-gap) auto;border:none;width:var(--label-size);height:var(--label-size);padding-left:0;padding-right:0;}
-      #printWrapper .label-preview { page-break-after: always; break-after: always; } /* força quebra/avançamento entre etiquetas */
-      @page{size:58mm auto; margin:0} /* largura fixa para impressoras de 58mm; ajuste se necessário */
+      .label-preview{position:fixed;left:0;top:0;margin:0;border:none;padding-left:5mm;padding-right:5mm;min-height:50cm;}
+      @page{size:58mm auto; margin:0}
       .company{font-size:13px;font-weight:700}
     }
 
     .store-name{font-weight:700}
     .product-name{font-weight:900;font-size:15px;letter-spacing:0.6px}
 
+    /* No mobile a pré-visualização fica abaixo dos botões */
     @media(max-width:768px){
       body{flex-direction:column}
       .controls{width:100%}
@@ -122,19 +115,18 @@
   <div class="label-preview" id="labelPreview">
     <div class="etiqueta" id="etiqueta">
       <div class="company">88ml Delivery Ltda</div>
-      <div class="cnpj">CNPJ: 61.615.703/0001-19</div>
       <div class="divider"></div>
 
       <div class="product product-name" id="previewNome">ANCHO ESTÂNCIA 92</div>
 
       <div class="row">
-        <div class="preco" id="previewPreco"><b>R$/kg:</b> R$0,00</div>
         <div class="peso" id="previewPeso"><b>Peso:</b> 0,000 kg</div>
+        <div class="peso" id="previewPreco"><b>R$/kg:</b> R$0,00</div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="total" id="previewTotal"><b>TOTAL:</b> <span class="total-value">R$0,00</span></div>
+      <div class="total" id="previewTotal">TOTAL: R$0,00</div>
     </div>
   </div>
 
@@ -171,21 +163,6 @@
       return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
     }
 
-    function maskInput(input, type){
-      input.addEventListener('input', ()=>{
-        let value = input.value;
-        if(type==='peso'){
-          value = value.replace(/[^0-9,]/g,'');
-        } else if(type==='money'){
-          value = value.replace(/[^0-9,]/g,'');
-        }
-        input.value = value;
-      });
-    }
-
-    maskInput(pesoInput, 'peso');
-    maskInput(precoInput, 'money');
-
     function atualizarPreview(){
       const nome = nomeInput.value.trim() || 'ANCHO ESTÂNCIA 92';
       const peso = parseNumberBR(pesoInput.value) || 0;
@@ -193,39 +170,17 @@
       const total = peso * preco;
 
       previewNome.textContent = nome.toUpperCase();
-      previewPreco.innerHTML = '<b>R$/kg:</b> ' + formatMoneyBR(preco);
       previewPeso.innerHTML = '<b>Peso:</b> ' + formatPeso(peso) + ' kg';
-      previewTotal.innerHTML = '<b>TOTAL:</b> <span class="total-value">' + formatMoneyBR(total) + '</span>';
+      previewPreco.innerHTML = '<b>R$/kg:</b> ' + formatMoneyBR(preco);
+      previewTotal.textContent = 'TOTAL: ' + formatMoneyBR(total);
 
       totalInput.value = formatMoneyBR(total);
     }
 
     document.getElementById('atualizar').addEventListener('click', atualizarPreview);
-
-    // substitui comportamento de impressão para criar múltiplas cópias com gap configurável
     document.getElementById('imprimir').addEventListener('click', ()=>{
       atualizarPreview();
-      // solicita quantas etiquetas imprimir (troque por um valor fixo se preferir)
-      const copies = parseInt(prompt('Quantas etiquetas imprimir?', '10'), 10) || 1;
-
-      // cria wrapper temporário para impressão
-      const printWrapper = document.createElement('div');
-      printWrapper.id = 'printWrapper';
-      printWrapper.style.display = 'block';
-
-      for(let i=0;i<copies;i++){
-        const clone = document.getElementById('labelPreview').cloneNode(true);
-        clone.removeAttribute('id'); // evita ids duplicados
-        printWrapper.appendChild(clone);
-      }
-
-      document.body.appendChild(printWrapper);
-
-      // abre diálogo de impressão (CSS @media print exibirá apenas .label-preview)
       window.print();
-
-      // remove wrapper após impressão (timeout dá tempo para o diálogo iniciar)
-      setTimeout(()=>{ try{ document.body.removeChild(printWrapper); }catch(e){} }, 600);
     });
 
     let timer;
@@ -240,4 +195,3 @@
   </script>
 </body>
 </html>
-// ...existing code...
