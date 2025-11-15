@@ -69,14 +69,15 @@
     .peso{font-size:11px}
     .peso b{font-weight:700}
 
-    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px}
-
+    .total{font-weight:900;font-size:15px;text-align:right;margin-top:6px;margin-bottom:6px}
+...
     @media print{
       body *{visibility:hidden}
       .label-preview, .label-preview *{visibility:visible}
       .label-preview{position:fixed;left:0;top:0;margin:0;border:none;padding-left:5mm;padding-right:5mm;min-height:50cm;}
       @page{size:58mm auto; margin:0}
       .company{font-size:13px;font-weight:700}
+      .total{margin-bottom:6mm}
     }
 
     .store-name{font-weight:700}
