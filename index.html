@@ -1,3 +1,4 @@
+// ...existing code...
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +8,8 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root{
-      --label-size:50mm;
+      --label-size:58mm; /* largura/altura da etiqueta (ajuste conforme necessário) */
+      --label-gap:6mm;  /* espaço entre etiquetas quando imprimir */
       --pad:6px;
       --line:#333;
       --font-family: 'Arial', sans-serif;
@@ -54,7 +56,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      margin-bottom:10mm;
+      margin-bottom:var(--label-gap); /* espaço entre etiquetas na visualização/impressão */
     }
 
     .etiqueta{
@@ -79,8 +81,9 @@
     @media print{
       body *{visibility:hidden}
       .label-preview, .label-preview *{visibility:visible}
-      .label-preview{position:relative;left:0;top:0;margin:0 auto 10mm auto;border:none;width:var(--label-size);height:var(--label-size);padding-left:0;padding-right:0;}
-      @page{size:auto; margin:0}
+      .label-preview{position:relative;left:0;top:0;margin:0 auto var(--label-gap) auto;border:none;width:var(--label-size);height:var(--label-size);padding-left:0;padding-right:0;}
+      #printWrapper .label-preview { page-break-after: always; break-after: always; } /* força quebra/avançamento entre etiquetas */
+      @page{size:58mm auto; margin:0} /* largura fixa para impressoras de 58mm; ajuste se necessário */
       .company{font-size:13px;font-weight:700}
     }
 
@@ -197,11 +200,32 @@
       totalInput.value = formatMoneyBR(total);
     }
 
-    document.getElementById('atualizar').addEventListener('click',
- atualizarPreview);
+    document.getElementById('atualizar').addEventListener('click', atualizarPreview);
+
+    // substitui comportamento de impressão para criar múltiplas cópias com gap configurável
     document.getElementById('imprimir').addEventListener('click', ()=>{
       atualizarPreview();
+      // solicita quantas etiquetas imprimir (troque por um valor fixo se preferir)
+      const copies = parseInt(prompt('Quantas etiquetas imprimir?', '10'), 10) || 1;
+
+      // cria wrapper temporário para impressão
+      const printWrapper = document.createElement('div');
+      printWrapper.id = 'printWrapper';
+      printWrapper.style.display = 'block';
+
+      for(let i=0;i<copies;i++){
+        const clone = document.getElementById('labelPreview').cloneNode(true);
+        clone.removeAttribute('id'); // evita ids duplicados
+        printWrapper.appendChild(clone);
+      }
+
+      document.body.appendChild(printWrapper);
+
+      // abre diálogo de impressão (CSS @media print exibirá apenas .label-preview)
       window.print();
+
+      // remove wrapper após impressão (timeout dá tempo para o diálogo iniciar)
+      setTimeout(()=>{ try{ document.body.removeChild(printWrapper); }catch(e){} }, 600);
     });
 
     let timer;
@@ -216,3 +240,4 @@
   </script>
 </body>
 </html>
+// ...existing code...
